@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import AuthorForm from './AuthorForm';
+import AuthorList from './AuthorList';
 
 function App() {
+  const [authors, setAuthors] = useState([]);
+  const [users, setUsers] = useState([]);
+
+  const addAuthor = (authorName) => {
+    setAuthors([...authors, authorName]);
+  };
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then((response) => response.json())
+      .then((data) => setUsers(data));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Author Submission</h1>
+      <AuthorForm onAddAuthor={addAuthor} />
+      <h2>Submitted Authors</h2>
+      <AuthorList authors={authors} />
+      <h2>Users from API</h2>
+      <ul>
+        {users.map((user) => (
+          <li key={user.id}>{user.name}</li>
+        ))}
+      </ul>
     </div>
   );
 }
